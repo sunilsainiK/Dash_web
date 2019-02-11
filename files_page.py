@@ -33,6 +33,7 @@ files_page_layout = html.Div(
                                                                          style={'margin-left':'1.5%','margin-top':'2.0%','width':'27.0%'})
 
                                                ],),
+                                               html.Div([
                                                html.Div([dcc.Upload(id='brow-fi',children=html.A(html.Button(['Browse']),),),],style={'margin-left':'45.0%'}),
                                                html.Div(html.Label('Or',style={'margin-left':'47.5%','margin-top':'2%'}),),
                                                html.Div([dcc.Upload(id='Drag-Drop',children=html.Div(['Drag & Drop']),),],
@@ -45,7 +46,12 @@ files_page_layout = html.Div(
 
                                                    ],style={'border':'solid',
                                                              'height':'800px'}),
+                            html.Div(id='output-image-upload')])
 
                          ]),
                  ]),id='files-source-content',
 )
+
+@files_page_layout.callable(Output('output-image-upload', 'children'),
+                           [Input('brow-fi','contents')],
+                           [State('brow-fi','contents')])
