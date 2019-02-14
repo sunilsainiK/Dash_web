@@ -1,5 +1,4 @@
 import dash
-
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
@@ -10,7 +9,6 @@ import dash_table
 import datetime
 import requests
 import json
-
 from main import app, server
 files_page_layout = html.Div(
                        html.Div([
@@ -31,7 +29,7 @@ files_page_layout = html.Div(
                                                                                 }),
 
                              html.A(html.Button('Back',id='b-btn',style={'text-align':'left'}),href='/'),
-                             html.A(html.Button('Next',id='data-btn',style={'text-align':'left','margin-left':'89.6%'}),href='/'),
+                             html.A(html.Button('Next',id='data-btn',style={'text-align':'left','margin-left':'89.6%'},type='submit',formAction='post'),href='/api_call'),
 
                                ]),html.Hr(),
 
@@ -73,11 +71,14 @@ files_page_layout = html.Div(
 
 def update_output(list_of_contents, list_of_names, list_of_dates):
     if list_of_names is not None:
-        global data
-        data=list_of_contents
+        content_type, content_string = list_of_contents.split(',')
+        global df
+        data = base64.b64decode(content_string)
+        df = pd.read_csv(io.StringIO(data.decode('utf-8')))
+
         return ([list_of_names,list_of_dates])
 
-@server.route('/data',methods=['GET'])
-def fl_data(data):
 
-  return data
+@server.route("/data_to_flask",methods=['GET'])
+def pp():
+    return (df.to_json(orient='records'))
